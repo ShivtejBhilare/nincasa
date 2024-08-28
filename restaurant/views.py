@@ -1,6 +1,9 @@
-from django.shortcuts import render, redirect
+
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import MenuItem, Reservation, CarouselImage
+
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 def home(request):
     menu_items = MenuItem.objects.all()
@@ -65,3 +68,25 @@ def dashboard(request):
         'menu_items': menu_items,
     }
     return render(request, 'restaurant/dashboard.html', context)
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
+def edit_menu_item(request, item_id):
+    menu_item = get_object_or_404(MenuItem, id=item_id)
+
+    if request.method == 'POST':
+        name = request.POST['name']
+        description = request.POST['description']
+        price = request.POST['price']
+        image = request.FILES.get('image')
+
+        menu_item.name = name
+        menu_item.description = description
+        menu_item.price = price
+        if image:
+            menu_item.image = image
+        menu_item.save()
+
+        return redirect('dashboard')
+
+    return render(request, 'restaurant/edit_menu_item.html', {'menu_item': menu_item})
