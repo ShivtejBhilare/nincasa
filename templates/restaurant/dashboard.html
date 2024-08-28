@@ -1,0 +1,131 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Dashboard</h2>
+    <h3>Bookings</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Guests</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.name }}</td>
+                <td>{{ booking.email }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.time }}</td>
+                <td>{{ booking.guests }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Menu Items</h3>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" class="form-control-file" id="image" name="image" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Menu Item</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for item in menu_items %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                    <p class="card-text">Price: ${{ item.price }}</p>
+                    <a href="#" class="btn btn-primary">Edit</a>
+                    <a href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h3>Carousel Images</h3>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" class="form-control-file" id="image" name="image">
+                </div>
+                <div class="form-group">
+                    <label for="video_url">Video URL</label>
+                    <input type="url" class="form-control" id="video_url" name="video_url" placeholder="Enter video URL">
+                </div>
+                <div class="form-group">
+                    <label for="caption">Caption</label>
+                    <input type="text" class="form-control" id="caption" name="caption">
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Carousel</button>
+            </form>
+        </div>
+    </div>
+
+    <h3>Carousel Preview</h3>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <div class="carousel-indicators">
+            {% for image in carousel_images %}
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for image in carousel_images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="carousel-content d-flex align-items-center justify-content-center">
+                    {% if image.video_url %}
+                    <video class="d-block w-100" controls>
+                        <source src="{{ image.video_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% else %}
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.caption }}">
+                    {% endif %}
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ image.caption }}</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
