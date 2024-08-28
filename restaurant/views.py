@@ -90,3 +90,6 @@ def edit_menu_item(request, item_id):
         return redirect('dashboard')
 
     return render(request, 'restaurant/edit_menu_item.html', {'menu_item': menu_item})
+
+def about(request):
+    return render(request, 'restaurant/about.html')

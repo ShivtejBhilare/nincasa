@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, booking, dashboard, menu, contact, edit_menu_item
+from .views import home, booking, dashboard, menu, contact, edit_menu_item, about
 from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
@@ -8,6 +8,7 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('menu/', menu, name='menu'),
     path('contact/', contact, name='contact'),
+    path('about/', about, name='about'),  # New About URL
     path('edit_menu_item/<int:item_id>/', edit_menu_item, name='edit_menu_item'),
     path('login/', LoginView.as_view(template_name='restaurant/login.html'), name='login'),  # Login URL
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),  # Logout URL
